@@ -6,10 +6,8 @@
   "engines": {
     "node": "8"
   },
-
   "dependencies": {
-    "discord.js": "^11.2.1",
-    "node-opus": "^0.2.7"
+    "discord.js": "^11.2.1"
   },
   "devDependencies": {
     "babel": "^6.23.0",

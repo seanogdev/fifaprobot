@@ -3,11 +3,18 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "engines": {
+    "node": "8"
+  },
+
   "dependencies": {
     "discord.js": "^11.2.1",
     "node-opus": "^0.2.7"
   },
   "devDependencies": {
+    "babel": "^6.23.0",
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
     "eslint": "^4.12.1",
     "eslint-config-standard": "^10.2.1",
     "eslint-plugin-import": "^2.8.0",
@@ -16,7 +23,8 @@
     "eslint-plugin-standard": "^3.0.1"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "./node_modules/.bin/babel-node index.js"
   },
   "author": "",
   "license": "ISC"

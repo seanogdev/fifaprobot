@@ -1,7 +1,7 @@
-import { Client } from 'discord.js'
-import express from 'express';
+const Discord = require('discord.js')
+const express = require('express')
 const app = express();
-const client = new Client()
+const client = new Discord.Client()
 const token = process.env.DISCORD_BOT_TOKEN
 
 client.on('message', message => {

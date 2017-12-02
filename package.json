@@ -1,12 +1,13 @@
 {
   "name": "fifa-18-bot",
   "version": "1.0.0",
-  "description": "",
+  "description": "A Fifa 18 Pro Clubs bot",
   "main": "index.js",
   "engines": {
     "node": "8"
   },
   "dependencies": {
+    "axios": "^0.17.1",
     "discord.js": "^11.2.1",
     "express": "^4.16.2",
     "firebase-admin": "^5.5.1"

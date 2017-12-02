@@ -1,5 +1,5 @@
 {
-  "name": "troops-bot",
+  "name": "fifa-18-bot",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,7 +8,8 @@
   },
   "dependencies": {
     "discord.js": "^11.2.1",
-    "express": "^4.16.2"
+    "express": "^4.16.2",
+    "firebase-admin": "^5.5.1"
   },
   "devDependencies": {
     "babel": "^6.23.0",

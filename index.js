@@ -1,45 +1,25 @@
-const Discord = require('discord.js')
-const FifaAPI = require('./fifa-18-api')
-const _ = require('lodash')
-const PREFIX = '!fifa'
+const {RichEmbed, ...Discord} = require('discord.js')
+const { getClubInfo } = require('./messages')
 const client = new Discord.Client()
 const token = process.env.DISCORD_BOT_TOKEN
 
-const handleMessage = message => {
+const PREFIX = '!fifa'
+
+const handleMessage = async message => {
   if (message.author.bot || !message.content.startsWith(PREFIX)) return
 
-  const normalizedMessage = message.content.toLowerCase()
-  const args = normalizedMessage.split(' ')
+  const normalizedMessage = message.content.toLowerCase().split(' ')
+  const [prefix, method, ...args] = normalizedMessage
 
-  // Dispose of !fifa
-  args.shift()
-
-  // Get method call
-  const call = args.shift()
-
-  if (call === 'clubinfo') {
+  if (method === 'clubinfo') {
     // const clubSearchString = args.length ? args[0] : message.guild.name
-    const clubSearchString = args.length ? args.join(' ') : 'Magic Potatoes'
-    getClubInfo(message, clubSearchString)
+    const clubName = args.length ? args.join(' ') : 'Magic Potatoes'
+    message.channel.send(`Searching for ${clubName}`)
+    const embed = await getClubInfo(clubName)
+    message.channel.send({
+      embed
+    })
   }
-}
-
-const getClubInfo = async (clubSearchString) => {
-  // message.channel.send(`Searching for ${clubSearchString}`)
-
-  console.log(`Searching for ${clubSearchString}`)
-
-  const clubSearch = await FifaAPI.search.searchClubByName(clubSearchString)
-
-  const clubInfo = await FifaAPI.club.getClubInfo(clubSearch.clubId)
-
-  console.log(clubInfo)
-
-  // message.channel.send(`found ${clubInfo.name}`)
-  // message.channel.send({embed: {
-  // 	color: 3447003,
-  // 	description: 'A very simple Embed!'
-  // }})
 }
 
 client.on('ready', () => {
@@ -47,7 +27,6 @@ client.on('ready', () => {
   console.log(`Bot has started, with ${client.users.size} users, in ${client.channels.size} channels of ${client.guilds.size} guilds.`)
   // Example of changing the bot's playing game to something useful.
   client.user.setGame(`on ${client.guilds.size} servers`)
-  getClubInfo('magic potatoes')
 })
 
 client.on('guildCreate', guild => {

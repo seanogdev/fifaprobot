@@ -1,3 +1,3 @@
 const api = require('./api')
 
-exports.getSettings = () => api.get('/settings')
+exports.getSettings = () => api.get('settings')

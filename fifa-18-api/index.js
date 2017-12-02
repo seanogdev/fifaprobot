@@ -4,7 +4,7 @@ var member = require('./member')
 var misc = require('./misc')
 var search = require('./search')
 
-exports.api = {
+module.exports = {
   club,
   leaderboard,
   member,

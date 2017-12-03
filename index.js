@@ -1,26 +1,6 @@
-const {RichEmbed, ...Discord} = require('discord.js')
-const { getClubInfo } = require('./messages')
+const Discord = require('discord.js')
 const client = new Discord.Client()
-const token = process.env.DISCORD_BOT_TOKEN
-
-const PREFIX = '!fifa'
-
-const handleMessage = async message => {
-  if (message.author.bot || !message.content.startsWith(PREFIX)) return
-
-  const normalizedMessage = message.content.toLowerCase().split(' ')
-  const [prefix, method, ...args] = normalizedMessage
-
-  if (method === 'clubinfo') {
-    // const clubSearchString = args.length ? args[0] : message.guild.name
-    const clubName = args.length ? args.join(' ') : 'Magic Potatoes'
-    message.channel.send(`Searching for ${clubName}`)
-    const embed = await getClubInfo(clubName)
-    message.channel.send({
-      embed
-    })
-  }
-}
+const {DISCORD_BOT_TOKEN, PREFIX} = process.env
 
 client.on('ready', () => {
   // This event will run if the bot starts, and logs in, successfully.
@@ -41,6 +21,19 @@ client.on('guildDelete', guild => {
   client.user.setGame(`on ${client.guilds.size} servers`)
 })
 
-client.on('message', handleMessage)
+client.on('message', async message => {
+  if (message.author.bot || !message.content.startsWith(PREFIX)) return
 
-client.login(token)
+  // This is the best way to define args. Trust me.
+  const args = message.content.slice(PREFIX.length).trim().split(/ +/g)
+  const commandMethod = args.shift().toLowerCase()
+
+  try {
+    let command = await require(`./commands/${commandMethod}.js`)
+    command.run(client, message, args)
+  } catch (err) {
+    console.error(err)
+  }
+})
+
+client.login(DISCORD_BOT_TOKEN)

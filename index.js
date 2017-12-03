@@ -1,6 +1,8 @@
-const {Client} = require('discord.js')
-const client = new Discord.Client()
+const { Client } = require('discord.js')
+const client = new Client()
 const token = process.env.DISCORD_BOT_TOKEN
+
+console.log(client)
 
 client.on('ready', () => {
   // This event will run if the bot starts, and logs in, successfully.

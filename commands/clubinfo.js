@@ -74,7 +74,7 @@ exports.run = async (client, message, args) => {
     const embed = new RichEmbed()
       .setColor(16238340)
       .setAuthor(name, teamCrest)
-      .setTitle(`**${all.wins}** - **${all.losses}** - **${all.ties}**`)
+      .setTitle(`**${all.wins}** - **${all.ties}** - **${all.losses}**`)
       .setDescription(`${getRegionNameById(regionId)}`)
       .setTimestamp(new Date())
       .setThumbnail(teamCrest)

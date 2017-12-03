@@ -77,7 +77,7 @@ exports.run = async (client, message, args) => {
       .setTitle(`**${all.wins}** - **${all.losses}** - **${all.ties}**`)
       .setDescription(`${getRegionNameById(regionId)}`)
       .setTimestamp(new Date())
-      .setThumbnail(division)
+      .setThumbnail(teamCrest)
       .addField('Record', parseRecord(season))
       .addField('Played', playedRecord)
       .addField('Current Season', currentSeason, true)

@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const client = new Discord.Client()
-const {DISCORD_BOT_TOKEN, PREFIX} = process.env
+const token = process.env.DISCORD_BOT_TOKEN
 
 client.on('ready', () => {
   // This event will run if the bot starts, and logs in, successfully.
@@ -22,10 +22,10 @@ client.on('guildDelete', guild => {
 })
 
 client.on('message', async message => {
-  if (message.author.bot || !message.content.startsWith(PREFIX)) return
+  if (message.author.bot || !message.content.startsWith(process.env.PREFIX)) return
 
   // This is the best way to define args. Trust me.
-  const args = message.content.slice(PREFIX.length).trim().split(/ +/g)
+  const args = message.content.slice(process.env.PREFIX.length).trim().split(/ +/g)
   const commandMethod = args.shift().toLowerCase()
 
   try {
@@ -36,4 +36,4 @@ client.on('message', async message => {
   }
 })
 
-client.login(DISCORD_BOT_TOKEN)
+client.login(token)

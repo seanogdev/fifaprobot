@@ -12,7 +12,7 @@ const parseRecord = (s) => {
 }
 
 exports.run = async (client, message, args) => {
-  const clubName = args.join(' ') || 'Magic Potatoes'
+  const clubName = args.join(' ') || message.guild.name
   message.channel.send(`Searching for ${clubName}`)
 
   try {
@@ -70,8 +70,6 @@ exports.run = async (client, message, args) => {
       `Goals conceded / match: **${all.averageGoalsAgainstPerGame}**`,
       `Goal difference: **${allGD}**`
     ].join('\n')
-
-    console.log(all)
 
     const embed = new RichEmbed()
       .setColor(16238340)

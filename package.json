@@ -4,7 +4,7 @@
   "description": "A Fifa 18 Pro Clubs bot",
   "main": "index.js",
   "engines": {
-    "node": "8"
+    "node": "8.9.x"
   },
   "dependencies": {
     "discord.js": "^11.2.1",

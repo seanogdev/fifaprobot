@@ -43,7 +43,7 @@ client.on('message', async message => {
     let command = await require(`./commands/${commandMethod}.js`)
     command.run(client, message, args)
   } catch (err) {
-    console.error(`Command "${commandMethod} not found.`)
+    console.error(`Command "${commandMethod}" not found.`)
   }
 })
 

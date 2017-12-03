@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "discord.js": "^11.2.1",
-    "fifa18-proclubs-api": "^1.0.0"
+    "fifa18-proclubs-api": "^1.0.1"
   },
   "devDependencies": {
     "babel": "^6.23.0",

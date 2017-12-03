@@ -171,4 +171,4 @@ const POSITIONS = [
 
 exports.positions = POSITIONS
 
-exports.getPositionById = id => POSITIONS.find(position => position.id == id).shortName.toUpperCase()
+exports.getPositionById = id => POSITIONS.find(position => position.id == id).shortName.toUpperCase() // eslint-disable-line eqeqeq

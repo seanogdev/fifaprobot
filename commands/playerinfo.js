@@ -1,29 +1,82 @@
-// var { RichEmbed } = require('discord.js')
-var FifaAPI = require('../fifa-18-api')
-var {RichEmbed} = require('discord.js')
+const FifaAPI = require('fifa18-proclubs-api')
+const { RichEmbed } = require('discord.js')
+const { getPositionById } = require('../utils/positions')
+const { getPercentage, getRatio } = require('../utils/maths')
+const blankString = '\u200B'
 
 exports.run = async (client, message, args) => {
-  // const clubSearchString = args.length ? args[0] : message.guild.name
-
   const playerName = args.splice(-1)[0].toLowerCase()
   const clubName = args.join(' ')
 
   message.channel.send(`Getting stats for *${playerName}*`)
 
   const clubId = await FifaAPI.club.getClubIdByName(clubName)
-  const members = await FifaAPI.club.getClubMembers(clubId)
+  const [clubInfo, members] = await Promise.all([FifaAPI.club.getClubInfo(clubId), FifaAPI.club.getClubMembers(clubId)])
   const { blazeId, ...member } = members.find(member => member.name.toLowerCase() === playerName)
   const [club, overall] = await Promise.all([
-    FifaAPI.member.getMembersClubStats(clubId, blazeId), FifaAPI.member.getMembersStats(blazeId)
+    FifaAPI.member.getMembersClubStats(clubId, blazeId),
+    FifaAPI.member.getMembersStats(blazeId)
   ])
 
-  console.log(overall, club)
+  const position = getPositionById(club.proPos)
 
-  const flagUrl = `https://fifa17.content.easports.com/fifa/fltOnlineAssets/CC8267B6-0817-4842-BB6A-A20F88B05418/2017/fut/items/images/flags/html5/35x22/${overall.proNationality}.png`
+  const teamCrest = `https://fifa17.content.easports.com/1630db19-29b0-4904-a574-f52f7c09e166/fifaweb_assets/crests/128x128/l${clubInfo.teamId}.png`
+
+  const flagUrl = `https://fifa17.content.easports.com/fifa/fltOnlineAssets/CC8267B6-0817-4842-BB6A-A20F88B05418/2017/fut/items/images/flags/html5/35x22/${club.proNationality}.png`
+
+  const clubStats1 = [
+    `Matches played: **${club.gamesPlayed}**`,
+    `Win rate: **${club.winRate}%**`,
+    `Man of the match: **${club.manOfTheMatch}**`,
+    `Man of the match rate: **${getPercentage(club.manOfTheMatch, club.gamesPlayed)}%**`,
+    ``,
+    `Goals: **${club.goals}**`,
+    `Goals per match: **${getRatio(club.goals, club.gamesPlayed)}**`,
+    `Shot success rate: **${club.shotSuccessRate}%**`,
+    `Assists: **${club.assists}**`,
+    `Assists per match: **${getRatio(club.assists, club.gamesPlayed)}**`,
+    ``,
+    `Passes made: **${club.passesMade}**`,
+    `Passes made per match: **${getRatio(club.passesMade, club.gamesPlayed)}**`,
+    `Pass success rate: **${club.passSuccessRate}%**`
+  ].join('\n')
+
+  const clubStats2 = [
+    `Tackles made: **${club.tacklesMade}**`,
+    `Tackles made per match: **${getRatio(club.tacklesMade, club.gamesPlayed)}**`,
+    `Tackle success rate: **${club.tackleSuccessRate}**`,
+    ``,
+    `Red cards: **${club.redCards}**`,
+    `Red cards rate: **${getPercentage(club.redCards, club.gamesPlayed)}%**`,
+    ``,
+    `Def clean sheets: **${club.cleanSheetsDef}**`,
+    `Def clean sheets rate: **${getPercentage(club.cleanSheetsDef, club.gamesPlayed)}%**`,
+    ``,
+    `GK clean sheets: **${club.cleanSheetsGK}**`,
+    `GK clean sheets rate: **${getPercentage(club.cleanSheetsGK, club.gamesPlayed)}%**`
+  ].join('\n')
+
+  const overallStats1 = [
+    `Matches Played: **${overall.gamesPlayed}**`,
+    `Man of the match: **${overall.manOfTheMatch}**`,
+    `MotM Percentage: **${getRatio(overall.manOfTheMatch, overall.gamesPlayed)}%**`
+  ].join('\n')
+
+  const overallStats2 = [
+    `Goals: **${overall.goals}**`,
+    `Goals per match: **${getRatio(overall.goals, overall.gamesPlayed)}**`,
+    `Assists: **${overall.assists}**`,
+    `Assists per match: **${getRatio(overall.assists, overall.gamesPlayed)}**`
+  ].join('\n')
 
   const embed = new RichEmbed()
+    .setTitle(`${club.proOverall} - ${position}`)
     .setAuthor(member.name, flagUrl)
-    .setTitle(`${club.proName} - ${club.proOverall}`)
-    .setDescription('test')
+    .setTimestamp(new Date())
+    .addField('Overall Info', overallStats1, true)
+    .addField(blankString, overallStats2, true)
+    .addField('Club Info', clubStats1, true)
+    .addField(blankString, clubStats2, true)
+
   message.channel.send({embed})
 }

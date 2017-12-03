@@ -7,9 +7,8 @@
     "node": "8"
   },
   "dependencies": {
-    "axios": "^0.17.1",
     "discord.js": "^11.2.1",
-    "lodash": "^4.17.4"
+    "fifa18-proclubs-api": "^1.0.0"
   },
   "devDependencies": {
     "babel": "^6.23.0",

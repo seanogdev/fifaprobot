@@ -1,11 +1,17 @@
 const { Client } = require('discord.js')
 const express = require('express')
 const http = require('http')
+const settings = require('./utils/settings')
 const app = express()
 const client = new Client()
 const token = process.env.DISCORD_BOT_TOKEN
 // const fs = require('fs')
 // const avatar = fs.readFileSync('./avatar.png')
+
+const defaultSettings = {
+  clubName: '',
+  members: ''
+}
 
 app.set('port', (process.env.PORT || 5000))
 
@@ -25,15 +31,15 @@ client.on('ready', () => {
 })
 
 client.on('guildCreate', guild => {
-  // This event triggers when the bot joins a guild.
-  console.log(`New guild joined: ${guild.name} (id: ${guild.id}). This guild has ${guild.memberCount} members!`)
+  settings.set(guild.id, defaultSettings)
   client.user.setGame(`with ${client.guilds.size} balls`)
+  console.log(`New guild joined: ${guild.name} (id: ${guild.id}). This guild has ${guild.memberCount} members!`)
 })
 
 client.on('guildDelete', guild => {
-  // this event triggers when the bot is removed from a guild.
-  console.log(`I have been removed from: ${guild.name} (id: ${guild.id})`)
+  settings.delete(guild.id)
   client.user.setGame(`on ${client.guilds.size} servers`)
+  console.log(`I have been removed from: ${guild.name} (id: ${guild.id})`)
 })
 
 client.on('message', async message => {
@@ -47,6 +53,8 @@ client.on('message', async message => {
     let command = await require(`./commands/${commandMethod}.js`)
     command.run(client, message, args)
   } catch (err) {
+    console.log(err)
+
     console.error(`Command "${commandMethod}" not found.`)
   }
 })

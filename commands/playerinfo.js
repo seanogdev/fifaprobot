@@ -1,18 +1,29 @@
 const FifaAPI = require('fifa18-proclubs-api')
+const settings = require('../utils/settings')
 const { RichEmbed } = require('discord.js')
 const { getPositionById } = require('../utils/positions')
 const { getPercentage, getRatio } = require('../utils/maths')
 const blankString = '\u200B'
 
 exports.run = async (client, message, args) => {
-  let playerName = args.splice(-1)[0].toLowerCase()
-  const clubName = args.join(' ')
+  const guildConf = settings.get(message.guild.id)
 
-  if (playerName === 'me') {
-    playerName = message.author.username
+  if (!guildConf.clubName) {
+    message.channel.send(`Club name not set`)
   }
 
-  message.channel.send(`Getting stats for *${playerName}*`)
+  const clubName = guildConf.clubName
+
+  const playerNameString = args.join(' ')
+  let playerName
+
+  if (playerNameString) {
+    playerName = playerNameString
+    message.channel.send(`Searching for ${playerName}`)
+  } else {
+    playerName = message.author.username
+    message.channel.send(`No player name given. Searching for ${playerName}`)
+  }
 
   try {
     const clubId = await FifaAPI.club.getClubIdByName(clubName)

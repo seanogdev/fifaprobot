@@ -1,6 +1,7 @@
 const FifaAPI = require('fifa18-proclubs-api')
 const { RichEmbed } = require('discord.js')
 const { getRegionNameById } = require('../utils/regions')
+const { calculateDivision } = require('../utils/divisions')
 const { getPercentage, getRatio, getDifference } = require('../utils/maths')
 
 const parseRecord = (s) => {
@@ -12,32 +13,34 @@ const parseRecord = (s) => {
 }
 
 exports.run = async (client, message, args) => {
-  const clubName = args.join(' ') || message.guild.name
-  message.channel.send(`Searching for ${clubName}`)
+  const clubNameString = args.join(' ')
+  let clubName
+
+  if (clubNameString) {
+    clubName = clubNameString
+    message.channel.send(`Searching for ${clubName}`)
+  } else {
+    clubName = message.guild.name
+    message.channel.send(`No club name given. Searching for ${clubName}`)
+  }
 
   try {
     const clubId = await FifaAPI.club.getClubIdByName(clubName)
 
-    const [info, all, season, matches] = await Promise.all([
+    const [info, all, season] = await Promise.all([
       FifaAPI.club.getClubInfo(clubId),
       FifaAPI.club.getClubStats(clubId),
-      FifaAPI.club.getClubSeasonStats(clubId),
-      FifaAPI.club.getClubMatchHistory(clubId)
+      FifaAPI.club.getClubSeasonStats(clubId)
+      // FifaAPI.club.getClubMatchHistory(clubId)
     ])
 
-    const div = 11 - season.currentDivision
+    const DIVISION = calculateDivision(season.currentDivision)
 
-    let {name, teamId, regionId, ...club} = info
+    const teamCrest = `https://fifa17.content.easports.com/1630db19-29b0-4904-a574-f52f7c09e166/fifaweb_assets/crests/128x128/l${info.customKit.isCustomTeam === '0' ? info.teamId : info.customKit.crestAssetId}.png`
 
-    let teamCrest
+    console.log(teamCrest)
 
-    if (info.customKit.isCustomTeam != 0) { // eslint-disable-line eqeqeq
-      teamCrest = `https://fifa15.content.easports.com/1630db19-29b0-4904-a574-f52f7c09e166/fifaweb_assets/crests/128x128/l${club.customKit.crestAssetId}.png`
-    } else {
-      teamCrest = `https://fifa17.content.easports.com/1630db19-29b0-4904-a574-f52f7c09e166/fifaweb_assets/crests/128x128/l${club.teamId}.png`
-    }
-
-    const division = `https://www.easports.com/iframe/fifa17proclubs/bundles/fifa/dist/images/division-crests/DivisionCrest${div}.png`
+    const divisionImage = `https://www.easports.com/iframe/fifa17proclubs/bundles/fifa/dist/images/division-crests/DivisionCrest${DIVISION}.png`
 
     const seasonGD = getDifference(season.goals - season.goalsAgainst)
     const allGD = getDifference(all.goals - all.goalsAgainst)
@@ -59,8 +62,7 @@ exports.run = async (client, message, args) => {
 
     const allSeasons = [
       // `Points in last matches: **${}**`,
-      // `Highest division: **${}**`,
-      // `Best campaign: **${}**`,
+      `Best division: **Div ${calculateDivision(season.bestDivision)}** (${season.bestPoints} pts)`,
       `Seasons played: **${season.seasons}**`,
       `Promotions: **${season.promotions}**`,
       `Seasons held: **${season.holds}**`,
@@ -75,9 +77,9 @@ exports.run = async (client, message, args) => {
 
     const embed = new RichEmbed()
       .setColor(16238340)
-      .setAuthor(name, division)
+      .setAuthor(info.name, divisionImage)
       .setTitle(`**${all.wins}** - **${all.ties}** - **${all.losses}**`)
-      .setDescription(`${getRegionNameById(regionId)}`)
+      .setDescription(`Division ${DIVISION} — ${getRegionNameById(info.regionId)}`)
       .setTimestamp(new Date())
       .setThumbnail(teamCrest)
       .addField('Record', parseRecord(season))
@@ -87,6 +89,8 @@ exports.run = async (client, message, args) => {
 
     message.channel.send({embed})
   } catch (e) {
+    console.log(e)
+
     message.channel.send(`No club called "*${clubName}*" was found`)
   }
 }

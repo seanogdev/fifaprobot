@@ -4,6 +4,8 @@ const http = require('http')
 const app = express()
 const client = new Client()
 const token = process.env.DISCORD_BOT_TOKEN
+// const fs = require('fs')
+// const avatar = fs.readFileSync('./avatar.png')
 
 app.set('port', (process.env.PORT || 5000))
 
@@ -19,6 +21,7 @@ client.on('ready', () => {
   console.log(`Bot has started, with ${client.users.size} users, in ${client.channels.size} channels of ${client.guilds.size} guilds.`)
   // Example of changing the bot's playing game to something useful.
   client.user.setGame(`on ${client.guilds.size} servers`)
+  // client.user.setAvatar(avatar)
 })
 
 client.on('guildCreate', guild => {

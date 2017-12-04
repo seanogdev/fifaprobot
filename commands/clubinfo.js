@@ -25,6 +25,8 @@ exports.run = async (client, message, args) => {
       FifaAPI.club.getClubMatchHistory(clubId)
     ])
 
+    const div = 11 - season.currentDivision
+
     let {name, teamId, regionId, ...club} = info
 
     let teamCrest
@@ -35,7 +37,7 @@ exports.run = async (client, message, args) => {
       teamCrest = `https://fifa17.content.easports.com/1630db19-29b0-4904-a574-f52f7c09e166/fifaweb_assets/crests/128x128/l${club.teamId}.png`
     }
 
-    const division = `https://www.easports.com/iframe/fifa17proclubs/bundles/fifa/dist/images/division-crests/DivisionCrest1.png`
+    const division = `https://www.easports.com/iframe/fifa17proclubs/bundles/fifa/dist/images/division-crests/DivisionCrest${div}.png`
 
     const seasonGD = getDifference(season.goals - season.goalsAgainst)
     const allGD = getDifference(all.goals - all.goalsAgainst)
@@ -73,7 +75,7 @@ exports.run = async (client, message, args) => {
 
     const embed = new RichEmbed()
       .setColor(16238340)
-      .setAuthor(name, teamCrest)
+      .setAuthor(name, division)
       .setTitle(`**${all.wins}** - **${all.ties}** - **${all.losses}**`)
       .setDescription(`${getRegionNameById(regionId)}`)
       .setTimestamp(new Date())

@@ -1,5 +1,6 @@
 const { Client } = require('discord.js')
 const express = require('express')
+const http = require('http')
 const app = express()
 const client = new Client()
 const token = process.env.DISCORD_BOT_TOKEN
@@ -48,3 +49,7 @@ client.on('message', async message => {
 })
 
 client.login(token)
+
+setInterval(() => {
+  http.get(`http://${process.env.HEROKU_APP_NAME}.herokuapp.com`)
+}, 1000 * 60 * 25)

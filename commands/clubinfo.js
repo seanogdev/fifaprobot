@@ -1,16 +1,8 @@
 const FifaAPI = require('fifa18-proclubs-api')
 const { RichEmbed } = require('discord.js')
 const { getRegionNameById } = require('../utils/regions')
-const { calculateDivision } = require('../utils/divisions')
+const { parseRecord, calculateDivision } = require('../utils/club')
 const { getPercentage, getRatio, getDifference } = require('../utils/maths')
-
-const parseRecord = (s) => {
-  const parseNum = num => (num === '0' ? ':regional_indicator_w:' : num === '1' ? ':regional_indicator_d:' : ':regional_indicator_l:')
-
-  const results = [ s.lastMatch0, s.lastMatch1, s.lastMatch2, s.lastMatch3, s.lastMatch4, s.lastMatch5 ]
-
-  return results.map(result => parseNum(result)).reverse().join('')
-}
 
 exports.run = async (client, message, args) => {
   const clubNameString = args.join(' ')
@@ -37,8 +29,6 @@ exports.run = async (client, message, args) => {
     const DIVISION = calculateDivision(season.currentDivision)
 
     const teamCrest = `https://fifa17.content.easports.com/1630db19-29b0-4904-a574-f52f7c09e166/fifaweb_assets/crests/128x128/l${info.customKit.isCustomTeam === '0' ? info.teamId : info.customKit.crestAssetId}.png`
-
-    console.log(teamCrest)
 
     const divisionImage = `https://www.easports.com/iframe/fifa17proclubs/bundles/fifa/dist/images/division-crests/DivisionCrest${DIVISION}.png`
 

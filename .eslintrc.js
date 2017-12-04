@@ -1,6 +1,10 @@
 module.exports = {
-		"extends": "standard",
-		"env": {
-			"node": true
-	}
+	"extends": "standard",
+	"env": {
+		"es6": true,
+		"node": true
+	},
+	"parserOptions": {
+        "sourceType": "module"
+    },
 };
